@@ -26,9 +26,6 @@ public class SettingsListener extends JFrame implements ItemListener {
     public void itemStateChanged(ItemEvent e) {
         int state = e.getStateChange();
         JCheckBox source = (JCheckBox) e.getSource();
-        System.out.println(source);
-        System.out.println(state);
-        System.out.println(source.getActionCommand());
         switch(state) {
             case 1:
                 try {setSetting(main, source.getActionCommand(), listener);} catch (IOException e1) {e1.printStackTrace();}
