@@ -24,9 +24,11 @@ public class Settings extends JPanel {
         JCheckBox listen = new JCheckBox("Key Listener");
         listen.addItemListener(sl);
         listen.setActionCommand("02");
+        listen.setSelected(true);
         add(listen);
 
         JCheckBox dictionaries = new JCheckBox("Use Custom Dictionaries");
+        dictionaries.addItemListener(sl);
         dictionaries.setActionCommand("03");
         add(dictionaries);
     }

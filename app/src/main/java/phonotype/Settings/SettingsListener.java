@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.github.kwhat.jnativehook.GlobalScreen;
 
+import phonotype.Typing.Dictionary;
 import phonotype.Typing.KeyListener;
 
 public class SettingsListener extends JFrame implements ItemListener {
@@ -30,28 +31,36 @@ public class SettingsListener extends JFrame implements ItemListener {
         System.out.println(source.getActionCommand());
         switch(state) {
             case 1:
-                setSetting(main, source.getActionCommand(), listener);
+                try {setSetting(main, source.getActionCommand(), listener);} catch (IOException e1) {e1.printStackTrace();}
                 break;
             case 2:
-                unsetSetting(main, source.getActionCommand(), listener);
+                try {unsetSetting(main, source.getActionCommand(), listener);} catch (IOException e1) {e1.printStackTrace();}
                 break;
             default:
                 System.out.println("Invalid");
         }
     }
 
-    public static void setSetting(JFrame main, String settings, KeyListener listen) {
+    public static void setSetting(JFrame main, String settings, KeyListener listen) throws JsonParseException, JsonMappingException, IOException {
         switch(settings) {
             case "01": main.setAlwaysOnTop(true); break;
             case "02": GlobalScreen.addNativeKeyListener(listen); break;
+            case "03": {
+                Dictionary d = listen.getDictionary();
+                d.AppendDictionary(KeyListener.getDictionary(listen.getClass().getResource("/dictionaryCustom.yaml")));
+                listen.updateDictionary(d);
+            }
             default: break;
         }
     }
 
-    public static void unsetSetting(JFrame main, String settings, KeyListener listen) {
+    public static void unsetSetting(JFrame main, String settings, KeyListener listen) throws JsonParseException, JsonMappingException, IOException {
         switch(settings) {
             case "01": main.setAlwaysOnTop(false); break;
             case "02": GlobalScreen.removeNativeKeyListener(listen); break;
+            case "03": {
+                listen.updateDictionary((KeyListener.getDictionary(listen.getClass().getResource("/dictionary.yaml"))));
+            }
             default: break;
         }
     }

@@ -1,5 +1,7 @@
 package phonotype.Typing;
 
+import java.lang.reflect.Array;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Dictionary {
@@ -72,5 +74,61 @@ public class Dictionary {
             case ']': return closeBracket;
             default: return new String[0];
         }
+    }
+
+    public void setLetter(char letter, String[] array) {
+        switch(letter) {
+            case 'q': q = array; return;
+            case 'w': w = array; return;
+            case 'e': e = array; return;
+            case 'r': r = array; return;
+            case 't': t = array; return;
+            case 'y': y = array; return;
+            case 'u': u = array; return;
+            case 'i': i = array; return;
+            case 'o': o = array; return;
+            case 'p': p = array; return;
+            case 'a': a = array; return;
+            case 's': s = array; return;
+            case 'd': d = array; return;
+            case 'f': f = array; return;
+            case 'g': g = array; return;
+            case 'h': h = array; return;
+            case 'j': j = array; return;
+            case 'k': k = array; return;
+            case 'l': l = array; return;
+            case 'z': z = array; return;
+            case 'x': x = array; return;
+            case 'c': c = array; return;
+            case 'v': v = array; return;
+            case 'b': b = array; return;
+            case 'n': n = array; return;
+            case 'm': m = array; return;
+            case '.': period = array; return;
+            case '!': exclamationMark = array; return;
+            case '?': questionMark = array; return;
+            case '-': hyphen = array; return;
+            case '[': openBracket = array; return;
+            case ']': closeBracket = array; return;
+            default: return;
+        }
+    }
+
+    public void AppendDictionary(Dictionary appenix) {
+        for(char l: KeyListener.chars) {
+            this.setLetter(l, concatenate(this.getLetter(l), appenix.getLetter(l)));
+        }
+    }
+
+    public static <T> T[] concatenate(T[] a, T[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+    
+        @SuppressWarnings("unchecked")
+        T[] c = (T[]) Array.newInstance(a.getClass().getComponentType(), aLen + bLen);
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+    
+        return c;
     }
 }

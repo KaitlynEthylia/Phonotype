@@ -39,7 +39,7 @@ public class KeyListener implements NativeKeyListener {
     Dictionary dictionary;
     char prev;
     ButtonGroup bg;
-    final List<Character> chars = Arrays.asList('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '.', '!', '?', '-', '[', ']');
+    public static final List<Character> chars = Arrays.asList('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '.', '!', '?', '-', '[', ']');
 
     public KeyListener(JFrame main) throws JsonParseException, JsonMappingException, IOException {
         this.altHeld = false;
@@ -53,6 +53,14 @@ public class KeyListener implements NativeKeyListener {
 		logger.setLevel(Level.WARNING);
 
 		GlobalScreen.setEventDispatcher(new VoidDispatchService());
+    }
+
+    public Dictionary getDictionary() {
+        return dictionary;
+    }
+
+    public void updateDictionary(Dictionary d) {
+        dictionary = d;
     }
 
 	public void nativeKeyPressed(NativeKeyEvent e) {
@@ -128,7 +136,7 @@ public class KeyListener implements NativeKeyListener {
         }
 	}
 
-    public Dictionary getDictionary(URL yaml) throws JsonParseException, JsonMappingException, IOException {
+    public static Dictionary getDictionary(URL yaml) throws JsonParseException, JsonMappingException, IOException {
         final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         Dictionary dictionary = objectMapper.readValue(yaml, Dictionary.class);
         return dictionary;
