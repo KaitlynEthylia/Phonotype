@@ -37,6 +37,7 @@ public class KeyListener implements NativeKeyListener {
     public boolean altHeld;
     JWindow window;
     Dictionary dictionary;
+    Dictionary customDictionary;
     char prev;
     ButtonGroup bg;
     public static final List<Character> chars = Arrays.asList('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '.', '!', '?', '-', '[', ']');
@@ -47,6 +48,7 @@ public class KeyListener implements NativeKeyListener {
         window.setLayout(new FlowLayout(FlowLayout.LEFT));
         window.setAlwaysOnTop(true);
         dictionary = getDictionary(this.getClass().getResource("/dictionary.yaml"));
+        customDictionary = getDictionary(this.getClass().getResource("/dictionaryCustom.yaml"));
 
 		try {GlobalScreen.registerNativeHook();} catch (NativeHookException e1) {e1.printStackTrace();}
         Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
@@ -59,8 +61,16 @@ public class KeyListener implements NativeKeyListener {
         return dictionary;
     }
 
-    public void updateDictionary(Dictionary d) {
+    public void setDictionary(Dictionary d) {
         dictionary = d;
+    }
+
+    public Dictionary getCustomDictionary() {
+        return customDictionary;
+    }
+
+    public void setCustomDictionary(Dictionary d) {
+        customDictionary = d;
     }
 
 	public void nativeKeyPressed(NativeKeyEvent e) {
@@ -159,5 +169,10 @@ public class KeyListener implements NativeKeyListener {
             }
         }
         if(x != 2){selectFirst(self);}
+    }
+
+    public void addCustoms() throws JsonParseException, JsonMappingException, IOException {
+        dictionary = getDictionary(this.getClass().getResource("/dictionary.yaml"));
+        dictionary.AppendDictionary(customDictionary);
     }
 }

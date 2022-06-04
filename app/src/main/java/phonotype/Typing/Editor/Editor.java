@@ -1,66 +1,82 @@
 package phonotype.Typing.Editor;
 
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-import phonotype.SelectionListener;
+import phonotype.Settings.Settings;
+import phonotype.Typing.KeyListener;
 
 
 public class Editor extends JFrame{
-    JList<String> list;
     ListSelectionModel lms;
-    SelectionListener sl;
+    JTextField[] fields;
+    JButton add, remove, ok;
     static final String[] data = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "-", "!", "?", ".", "[", "]"};
-    public Editor() throws IOException {
+    public Editor(KeyListener listener, Settings settings) throws IOException {
         InputStream imageInputStream = this.getClass().getResourceAsStream("/iconBlack.png");
         BufferedImage bufferedImage = ImageIO.read(imageInputStream);
         setIconImage(bufferedImage);
         setTitle("Dictionary Editor");
-        setSize(320, 240);
+        setSize(180, 240);
         setResizable(false);
 
-        list = new JList<String>(data);
-        lms = list.getSelectionModel();
-        DefaultListCellRenderer renderer = (DefaultListCellRenderer) list.getCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.CENTER);
-        lms.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        lms.addListSelectionListener(new SelectionListener());
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setSize(100, 200);
 
-        JScrollPane scroll = new JScrollPane(list);
-        scroll.setPreferredSize(new Dimension(80, 240));
+        JTextField field = new JTextField();
+        TextField tf = new TextField(panel, data, BorderLayout.NORTH, listener);
 
-        add(scroll, BorderLayout.WEST);
+        panel.add(field, BorderLayout.SOUTH);
+
+        ListPane lp = new ListPane(this, data, BorderLayout.WEST, listener, tf);
 
         JPanel buttons = new JPanel();
         buttons.setLayout(new GridLayout(1, 3, 5, 5));
-        JButton add = new JButton("Remove");
-        add.setEnabled(false);
+
+        EventActionListener events = new EventActionListener(data, field, listener, lp, tf, settings, this);
+
+        add = new JButton("Add");
+        add.addActionListener(events);
+        add.setMargin(new Insets(0, 0, 0, 0));
         buttons.add(add);
-        JButton remove = new JButton("Remove");
+
+        remove = new JButton("Delete");
         remove.setEnabled(false);
+        tf.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if(!tf.isSelectionEmpty()) {
+                    remove.setEnabled(true);
+                }
+            }
+        });
+        remove.addActionListener(events);
+        remove.setMargin(new Insets(0, 0, 0, 0));
         buttons.add(remove);
-        JButton ok = new JButton("OK");
-        ok.setEnabled(false);
+
+        ok = new JButton("OK");
+        ok.addActionListener(events);
+        ok.setMargin(new Insets(0, 0, 0, 0));
         buttons.add(ok);
 
-        JTextArea text = new JTextArea("Not yet implemented \n Try Editing \'dictionaryCustom.yaml\' \n to add to the dictionary.");
-        
+
+        add(panel, BorderLayout.EAST);
         add(buttons, BorderLayout.SOUTH);
-        add(text, BorderLayout.EAST);
+    }
+    public JButton getRemove() {
+        return remove;
     }
 }
